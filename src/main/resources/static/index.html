@@ -1,0 +1,210 @@
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:wght@400;500&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}
+    #app{font-family:'DM Sans',sans-serif;display:grid;grid-template-columns:280px 1fr;min-height:520px;border-radius:var(--border-radius-lg);overflow:hidden;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+
+    #sidebar{background:#111009;display:flex;flex-direction:column;border-right:0.5px solid #2a2418}
+    #brand{padding:24px 20px 20px;border-bottom:0.5px solid #2a2418}
+    #brand-logo{width:44px;height:44px;border-radius:10px;background:#c9a84c;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;color:#111009;margin-bottom:12px}
+    #brand-name{font-family:'Playfair Display',serif;font-size:17px;color:#f5e6c8;line-height:1.2}
+    #brand-sub{font-size:11px;color:#6b5c3a;margin-top:3px;letter-spacing:0.04em;text-transform:uppercase}
+    #info-section{padding:20px;flex:1}
+    .info-block{margin-bottom:20px}
+    .info-label{font-size:10px;color:#6b5c3a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+    .info-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+    .info-icon{width:14px;height:14px;flex-shrink:0;margin-top:1px;opacity:0.6}
+    .info-text{font-size:12.5px;color:#a8956a;line-height:1.5}
+    .quick-section{padding:0 20px 20px}
+    .quick-label{font-size:10px;color:#6b5c3a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+    .quick-btn{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:6px;border:0.5px solid #2a2418;background:transparent;color:#8a7a5a;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:5px;transition:all 0.15s}
+    .quick-btn:hover{background:#1e1810;border-color:#c9a84c;color:#c9a84c}
+    #sidebar-footer{padding:16px 20px;border-top:0.5px solid #2a2418}
+    #status-row{display:flex;align-items:center;gap:7px}
+    #status-dot{width:7px;height:7px;border-radius:50%;background:#4caf50;flex-shrink:0}
+    #status-text{font-size:11.5px;color:#6b5c3a}
+    #session-id{font-size:10px;color:#3d3222;margin-top:4px;font-family:monospace}
+
+    #chat-area{display:flex;flex-direction:column;background:var(--color-background-secondary)}
+    #chat-header{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    #chat-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+    #chat-subtitle{font-size:12px;color:var(--color-text-tertiary);margin-top:2px}
+    #powered{font-size:11px;color:var(--color-text-tertiary);background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);padding:4px 10px;border-radius:20px}
+
+    #messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:14px;min-height:300px;max-height:340px}
+    .msg{max-width:72%;display:flex;flex-direction:column;gap:4px;animation:fadeUp 0.2s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .msg.user{align-self:flex-end;align-items:flex-end}
+    .msg.bot{align-self:flex-start;align-items:flex-start}
+    .msg-sender{font-size:11px;color:var(--color-text-tertiary);padding:0 4px}
+    .bubble{padding:11px 15px;font-size:13.5px;line-height:1.6;color:var(--color-text-primary)}
+    .user .bubble{background:#c9a84c;color:#1a1209;border-radius:14px 14px 4px 14px;font-weight:500}
+    .bot .bubble{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px 14px 14px 4px}
+    .msg-time{font-size:10px;color:var(--color-text-tertiary);padding:0 4px}
+
+    #typing-row{padding:0 24px 8px;display:none;align-items:center;gap:8px}
+    .t-avatar{width:24px;height:24px;border-radius:50%;background:#c9a84c;display:flex;align-items:center;justify-content:center;font-size:10px;color:#111009;font-weight:500;flex-shrink:0}
+    #typing-bubble{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px 14px 14px 4px;padding:10px 14px;display:flex;gap:4px;align-items:center}
+    .dot{width:6px;height:6px;border-radius:50%;background:#c9a84c;animation:bounce 1.2s infinite}
+    .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+    @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+    #input-area{background:var(--color-background-primary);border-top:0.5px solid var(--color-border-tertiary);padding:16px 24px;flex-shrink:0}
+    #input-row{display:flex;gap:10px;align-items:center}
+    #msg-input{flex:1;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:10px 14px;font-size:13.5px;font-family:'DM Sans',sans-serif;background:var(--color-background-secondary);color:var(--color-text-primary);outline:none;transition:border-color 0.15s}
+    #msg-input:focus{border-color:#c9a84c;box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+    #msg-input::placeholder{color:var(--color-text-tertiary)}
+    #send-btn{height:40px;padding:0 18px;background:#c9a84c;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#111009;transition:all 0.15s;flex-shrink:0}
+    #send-btn:hover{background:#b8943a}
+    #send-btn:active{transform:scale(0.97)}
+    #send-btn svg{width:14px;height:14px}
+    #error-banner{display:none;background:var(--color-background-danger);border:0.5px solid var(--color-border-danger);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--color-text-danger);margin-top:10px}
+    #hint-row{display:flex;justify-content:space-between;margin-top:8px}
+    #char-count{font-size:11px;color:var(--color-text-tertiary)}
+    #hint-text{font-size:11px;color:var(--color-text-tertiary)}
+</style>
+
+<div id="app">
+    <div id="sidebar">
+        <div id="brand">
+            <div id="brand-logo">LE</div>
+            <div id="brand-name">La Esquina</div>
+            <div id="brand-sub">Asistente Virtual</div>
+        </div>
+        <div id="info-section">
+            <div class="info-block">
+                <div class="info-label">Horario</div>
+                <div class="info-item">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <div class="info-text">Lunes a Sábado<br>12:00 — 23:00 hs</div>
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Ubicación</div>
+                <div class="info-item">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <div class="info-text">Av. Corrientes 1234<br>Buenos Aires</div>
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Reservas</div>
+                <div class="info-item">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.68 16.92z"/></svg>
+                    <div class="info-text">011-1234-5678</div>
+                </div>
+            </div>
+        </div>
+        <div class="quick-section">
+            <div class="quick-label">Preguntas frecuentes</div>
+            <button class="quick-btn" onclick="sendQuick('¿Cuál es el horario?')">¿Cuál es el horario?</button>
+            <button class="quick-btn" onclick="sendQuick('¿Cuál es el menú y los precios?')">¿Cuál es el menú?</button>
+            <button class="quick-btn" onclick="sendQuick('¿Cómo hago una reserva?')">¿Cómo reservo una mesa?</button>
+            <button class="quick-btn" onclick="sendQuick('¿Dónde están ubicados?')">¿Dónde están ubicados?</button>
+        </div>
+        <div id="sidebar-footer">
+            <div id="status-row">
+                <div id="status-dot"></div>
+                <span id="status-text">Asistente activo</span>
+            </div>
+            <div id="session-id">cargando...</div>
+        </div>
+    </div>
+
+    <div id="chat-area">
+        <div id="chat-header">
+            <div>
+                <div id="chat-title">Chat con el asistente</div>
+                <div id="chat-subtitle">Respondemos al instante</div>
+            </div>
+            <div id="powered">Powered by LLaMA 3 · Groq</div>
+        </div>
+        <div id="messages">
+            <div class="msg bot">
+                <div class="msg-sender">Asistente</div>
+                <div class="bubble">¡Bienvenido a <strong>La Esquina</strong>! Estoy aquí para ayudarte con información sobre nuestro restaurante. ¿En qué puedo asistirte?</div>
+                <div class="msg-time">ahora</div>
+            </div>
+        </div>
+        <div id="typing-row">
+            <div class="t-avatar">LE</div>
+            <div id="typing-bubble"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        </div>
+        <div id="input-area">
+            <div id="input-row">
+                <input id="msg-input" type="text" placeholder="Escribí tu consulta acá..." maxlength="300"/>
+                <button id="send-btn" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#111009" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Enviar
+                </button>
+            </div>
+            <div id="hint-row">
+                <span id="hint-text">Enter para enviar · Conectado a localhost:8080</span>
+                <span id="char-count">0 / 300</span>
+            </div>
+            <div id="error-banner">No se pudo conectar al backend. Asegurate de que el servidor esté corriendo en localhost:8080.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sessionId = 'sesion-' + Math.random().toString(36).substr(2,8);
+    document.getElementById('session-id').textContent = 'ID: ' + sessionId;
+    const input = document.getElementById('msg-input');
+    const messages = document.getElementById('messages');
+    const typingRow = document.getElementById('typing-row');
+    const errorBanner = document.getElementById('error-banner');
+    const charCount = document.getElementById('char-count');
+
+    input.addEventListener('keydown', e => { if(e.key === 'Enter') sendMessage(); });
+    input.addEventListener('input', () => { charCount.textContent = input.value.length + ' / 300'; });
+
+    function getTime() {
+        return new Date().toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function addMessage(text, role) {
+        const div = document.createElement('div');
+        div.className = 'msg ' + role;
+        const sender = role === 'user' ? 'Vos' : 'Asistente';
+        div.innerHTML = `<div class="msg-sender">${sender}</div><div class="bubble">${text}</div><div class="msg-time">${getTime()}</div>`;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function showTyping(show) {
+        typingRow.style.display = show ? 'flex' : 'none';
+        if(show) messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const text = input.value.trim();
+        if(!text) return;
+        input.value = '';
+        charCount.textContent = '0 / 300';
+        errorBanner.style.display = 'none';
+        addMessage(text, 'user');
+        showTyping(true);
+        document.getElementById('send-btn').disabled = true;
+        try {
+            const res = await fetch('http://localhost:8080/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: text, sessionId})
+            });
+            if(!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            showTyping(false);
+            addMessage(data.response, 'bot');
+        } catch(e) {
+            showTyping(false);
+            errorBanner.style.display = 'block';
+        }
+        document.getElementById('send-btn').disabled = false;
+        input.focus();
+    }
+
+    function sendQuick(text) {
+        input.value = text;
+        sendMessage();
+    }
+</script>
